@@ -1,8 +1,14 @@
 # Condominium Declaration Generator
 
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![License](https://img.shields.io/github/license/cunhabarbosa/condominium-declaration-generator)
+![Repo size](https://img.shields.io/github/repo-size/cunhabarbosa/condominium-declaration-generator)
+![Last commit](https://img.shields.io/github/last-commit/cunhabarbosa/condominium-declaration-generator)
+
 Generate condominium declaration documents in **DOCX and PDF format** from a Word template.
 
 This tool replaces placeholders in a `.docx` file, preserves the original formatting as much as possible, and can optionally export the result to PDF with metadata.
+
 
 ## Features
 
@@ -15,6 +21,14 @@ This tool replaces placeholders in a `.docx` file, preserves the original format
 - Generate output filenames in the format:
   - `YYYY-MM-DD - 1AP2.docx`
   - `YYYY-MM-DD - 1AP2.pdf`
+
+
+## Motivation
+
+Managing condominium administration often requires generating formal declaration documents for property transactions.
+
+This tool automates the generation of these documents from a Word template, reducing manual work and ensuring consistent formatting.
+
 
 ## Project structure
 
@@ -70,3 +84,11 @@ The template file must contain the following placeholders:
 {{VALOR_MENSAL}}
 {{VALOR_MENSAL_EXTENSO}}
 ```
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+## Author
+
+Created by [Antonio Barbosa](https://github.com/cunhabarbosa)
