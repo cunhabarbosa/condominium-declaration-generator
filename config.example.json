@@ -1,0 +1,18 @@
+{
+  "fraction": "B",
+  "annual_value": "735,01",
+  "monthly_value": "61,32",
+  "declaration_date": "",
+  "settlement_date": "31/03/2026",
+  "template_file": "template.docx",
+  "output_dir": "output",
+  "generate_pdf": true,
+  "pdf_metadata": {
+    "title": "Declaração de encargos do Condomínio",
+    "author": "Condomínio Molares 16",
+    "subject": "Declaração para efeitos de alienação",
+    "keywords": "condomínio, declaração, alienação, encargos",
+    "creator": "Python generator",
+    "producer": "docx2pdf + pypdf"
+  }
+}
