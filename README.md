@@ -1,6 +1,6 @@
 # Condominium Declaration Generator
 
-Generate condominium declaration documents in DOCX and PDF format from a Word template.
+Generate condominium declaration documents in **DOCX and PDF format** from a Word template.
 
 This tool replaces placeholders in a `.docx` file, preserves the original formatting as much as possible, and can optionally export the result to PDF with metadata.
 
@@ -37,15 +37,36 @@ condominium-declaration-generator/
 └─ output/
 ```
 
-## Requirements
-- Python 3.10+
-- Microsoft Word installed (required by docx2pdf on Windows)
+## Quick Start
 
 ```bash
+git clone https://github.com/cunhabarbosa/condominium-declaration-generator
+cd condominium-declaration-generator
+
 pip install -r requirements.txt
+
+cp config.example.json config.json
+
+python main.py
 ```
 
-## Configuration
+Note:
+- Adjust the configuration in `config.json` if needed.
+- Make sure `template.docx` contains the required placeholders
 
-Copy config.example.json to config.json and update the values.
+## Template placeholders
 
+The template file must contain the following placeholders:
+
+```text
+{{DATA_EXTENSO}}
+{{DATA_CURTA}}
+{{FRACAO}}
+{{ANDAR}}
+{{APART}}
+{{DATA_LIQUIDACAO}}
+{{VALOR_ANUAL}}
+{{VALOR_ANUAL_EXTENSO}}
+{{VALOR_MENSAL}}
+{{VALOR_MENSAL_EXTENSO}}
+```
