@@ -1,9 +1,73 @@
+# =========================
+# Python
+# =========================
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
 
-config.json
+# =========================
+# Virtual environments
+# =========================
+.venv/
+venv/
+env/
+ENV/
+
+# =========================
+# PyInstaller
+# =========================
+build/
+dist/
+*.spec
+
+# =========================
+# Release artifacts
+# =========================
+release/
+*.zip
+
+# =========================
+# Project-specific files
+# =========================
+
+# Ignore config files in root
+/config*.json
+
+# Keep example config
+!config.example.json
+
+# Generated output files
 output/
+
+# Template (local/private)
 template.docx
 
+# Temporary Office files
 ~$*.docx
 ~$*.pdf
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDEs / Editors
+# =========================
+.vscode/
+.idea/
+*.code-workspace
+
+# =========================
+# Misc
+# =========================
+*.tmp
+*.bak
+*.swp
