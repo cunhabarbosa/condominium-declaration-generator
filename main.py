@@ -1,4 +1,10 @@
-"""Main entry point for the condominium declaration generator."""
+"""
+Main entry point for the condominium declaration generator.
+
+This module loads the project configuration, builds the placeholder values,
+generates the DOCX document from the configured template, and optionally exports
+the result to PDF with metadata.
+"""
 
 from pathlib import Path
 from typing import Any, Dict, Tuple
@@ -9,21 +15,38 @@ from src.money_utils import format_money
 from src.fraction_utils import get_fraction_info
 from src.docx_generator import generate_docx
 from src.pdf_utils import generate_pdf, add_pdf_metadata
-from src.file_utils import validate_file_exists
+from src.file_utils import validate_file_exists, confirm_overwrite
+from src.utils import ask_yes_no
+
+Placeholders = dict[str, str]
+Config = dict[str, Any]
 
 
 def generate_filename(date_str: str, floor: str, apartment: str) -> str:
     """
     Generate the output filename in the format:
-    YYYY-MM-DD - 5AP4
+    YYYY-MM-DD - [FLOOR]AP[APARTMENT]
+
+    Example: "2024-06-15 - 3AP12"
     """
     date_obj = parse_date(date_str)
     date_iso = date_obj.strftime("%Y-%m-%d")
     return f"{date_iso} - {floor}AP{apartment}"
 
 
-def build_placeholders(config: Dict[str, Any]) -> Tuple[Dict[str, str], str, str]:
-    """Build the placeholder dictionary for the template."""
+def build_placeholders(config: Config) -> Tuple[Placeholders, str, str]:
+    """Build the placeholder dictionary for the template.
+    
+    Args:
+        config: Loaded configuration dictionary.
+    
+    Returns:
+        A tuple containing:
+        - placeholder mapping for the DOCX template
+        - floor
+        - apartment
+        - declaration date in short format
+    """
     fraction, floor, apartment = get_fraction_info(config["fraction"])
 
     declaration_date_long, declaration_date_short = generate_date(
@@ -47,11 +70,19 @@ def build_placeholders(config: Dict[str, Any]) -> Tuple[Dict[str, str], str, str
         "{{VALOR_MENSAL_EXTENSO}}": monthly_value_text,
     }
 
-    return placeholders, floor, apartment
+    return placeholders, floor, apartment, declaration_date_short
 
 
 def build_pdf_metadata(config: Dict[str, Any], placeholders: Dict[str, str]) -> Dict[str, str]:
-    """Build PDF metadata dictionary."""
+    """Build PDF metadata dictionary.
+
+    Args:
+        config: Loaded configuration dictionary.
+        placeholders: Template placeholders used to derive default metadata.
+
+    Returns:
+        Dictionary compatible with the PDF metadata writer.
+    """
     metadata_config = config.get("pdf_metadata", {})
 
     return {
@@ -76,23 +107,22 @@ def print_placeholders(placeholders: dict[str, str]) -> None:
     print("\nPlaceholders used in the document:")
     print("-" * 50)
 
-    max_key = max(len(k) for k in placeholders)
+    max_key_length = max(len(k) for k in placeholders)
 
     for key, value in placeholders.items():
-        print(f"{key:<{max_key}} : {value}")
+        print(f"{key:<{max_key_length}} : {value}")
 
     print("-" * 50)
 
 
 def main() -> None:
-    """Main entry point."""
+    """Run the document generation workflow."""
 
     config_path = validate_file_exists("config.json", "Configuration file")
     config = load_config(config_path)
 
-    placeholders, floor, apartment = build_placeholders(config)
+    placeholders, floor, apartment, declaration_date_short  = build_placeholders(config)
 
-    _, declaration_date_short = generate_date(config.get("declaration_date"))
     filename = generate_filename(declaration_date_short, floor, apartment)
 
     template_file = validate_file_exists(
@@ -108,19 +138,26 @@ def main() -> None:
     docx_file = output_dir / f"{filename}.docx"
     pdf_file = output_dir / f"{filename}.pdf"
 
+    # DOCX
+    if not confirm_overwrite(docx_file):
+        print(f"Skipped DOCX: {docx_file}")
+        return
+    
     generate_docx(
         template_file=template_file,
         output_file=docx_file,
         placeholders=placeholders
     )
+    print(f"Generated DOCX: {docx_file}")
 
     if config.get("generate_pdf", True):
+        if not confirm_overwrite(pdf_file):
+            return
+
         generate_pdf(docx_file=docx_file, pdf_file=pdf_file)
         pdf_metadata = build_pdf_metadata(config, placeholders)
         add_pdf_metadata(pdf_file=pdf_file, metadata=pdf_metadata)
 
-    print(f"Generated DOCX: {docx_file}")
-    if config.get("generate_pdf", True):
         print(f"Generated PDF:  {pdf_file}")
 
 
