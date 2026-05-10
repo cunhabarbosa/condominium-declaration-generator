@@ -1,3 +1,5 @@
+"""Utilities for validating file existence and handling overwrite confirmations."""
+
 from pathlib import Path
 import sys
 
@@ -28,3 +30,11 @@ def validate_file_exists(file_path: str | Path, description: str) -> Path:
         sys.exit(1)
 
     return path
+
+def confirm_overwrite(path: Path) -> bool:
+    """Ask user confirmation before overwriting an existing file."""
+    if not path.exists():
+        return True
+
+    answer = input(f"File already exists: {path}\nOverwrite? (y/n): ").strip().lower()
+    return answer in ("y", "yes")
